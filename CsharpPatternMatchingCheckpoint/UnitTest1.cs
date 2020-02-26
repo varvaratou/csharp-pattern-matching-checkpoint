@@ -55,21 +55,33 @@ namespace CsharpPatternMatchingCheckpoint
             Assert.AreEqual(true, passResult && !failResult);
         }
 
-        public static bool getPassOrFail_ByPropertyPatternMatching(Student student)
+        public static bool getPassOrFail_ByPropertyPatternMatching(Student student) =>
+        student switch
         {
             // Use property pattern matching to determine if Grade is pass (A,B,C) or fail (D,F) and TuitionPaid is true.
-        }
+            var x when x.Grade <= 'C' && x.TuitionPaid == true => true,
+            var x when x.Grade >= 'D' && x.TuitionPaid == true => false,
+            _ => false,
+        };
 
-        public static bool getPassOrFail_ByTuplePatternMatching(Student student)
+        public static bool getPassOrFail_ByTuplePatternMatching(Student student) =>
+        (student.Grade, student.TuitionPaid) switch
         {
             // Use tuple pattern matching to determine if Grade is pass (A,B,C) or fail (D,F) and TuitionPaid is true.
-        }
+            ('A', true) => true,
+            ('B', true) => true,
+            ('C', true) => true,
+            _ => false,
+        };
 
-        public static bool getPassOrFail_ByPositionalPatternMatching(Student student)
+        public static bool getPassOrFail_ByPositionalPatternMatching(Student student) =>
+        student switch
         {
             // Use positional pattern matching to determine if Grade is pass (A,B,C) or fail (D,F) and TuitionPaid is true.
             // Note: You will to define the Deconstruct method for Student
-        }
+            var (a, b) when a < 'D' && a >= 'A' && b => true,
+            _ => false
+        };
     }
 
     public class Student
@@ -81,5 +93,7 @@ namespace CsharpPatternMatchingCheckpoint
 
         public Student(string firstName, string lastName, bool tuitionPaid, char grade) =>
             (FirstName, LastName, TuitionPaid, Grade) = (firstName, lastName, tuitionPaid, grade);
+
+        public void Deconstruct(out char a, out bool b) => (a, b) = (Grade, TuitionPaid);
     }
 }
